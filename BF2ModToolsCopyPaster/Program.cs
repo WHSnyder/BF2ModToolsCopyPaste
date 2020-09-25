@@ -8,47 +8,88 @@ using LibSWBF2.MSH;
 using LibSWBF2.MSH.Chunks;
 using System.Linq;
 
+using System.Windows.Forms;
+
 namespace BF2ModToolsCopyPaster
 {
     class Program
     {
+        static string depsTXTPath;
+
+        static void CopyWithDeps(string path_)
+        {
+
+
+            List<string> fileDeps = new List<string>();
+
+            string filePath = path_;
+            if (!filePath.EndsWith(".odf") && !filePath.EndsWith(".msh"))
+            {
+                MessageBox.Show(filePath + " is not an ODF file...", "Warning");
+            }
+
+            ODFHandler handle = ODFHandler.GetODFHandler(filePath);
+
+            MSHHandler mshHandle = null;
+            if (handle != null)
+            {
+                mshHandle = MSHHandler.SearchFromFolder(filePath, handle.GetPropertyValue("GeometryName"));
+
+                if (mshHandle == null)
+                {
+                    return;
+                }
+            }
+
+            fileDeps.AddRange(mshHandle.FindTextureFiles());
+
+            List<string> noDups = fileDeps.Distinct().ToList();
+            System.IO.File.WriteAllLines(depsTXTPath, noDups.ToArray());
+
+            Console.WriteLine("\nPaths to be copied: ");
+            foreach (string copied in noDups)
+            {
+                Console.WriteLine(copied);
+            }
+        }
+
+
+        static void PasteWithDeps(string path)
+        {
+            string mshDestDir;
+            string odfDestDir;
+
+
+            foreach (string line in File.ReadAllLines(depsTXTPath))
+            {
+                
+            }
+        }
+
+
 
         static void Main(string[] args)
         {
-            List<string> fileDeps = new List<string>();
-
-            if (args.Length < 2)
+            if (args.Length < 1)
             {
                 Console.WriteLine("Please provide path(s) to ODF file...");
                 return;
             }
 
-            string filePath = args[0];
-
-            ODFHandler handle = ODFHandler.GetODFHandler(filePath);
-           
-            MSHHandler mshHandle = null;
-            if (handle != null)
-            {
-                mshHandle = MSHHandler.SearchFromFolder(filePath, handle.GetPropertyValue("GeometryName"));
-            }  
-
             string exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             string exeDir = exePath.StartsWith("file:\\") ? exePath.Substring(6) : exePath;
-            string depsTXTPath = exeDir + "\\deps.txt";
+            depsTXTPath = exeDir + "\\deps.txt";
 
-            Console.WriteLine("Will write deps to {0}", depsTXTPath);
-
-            fileDeps.AddRange(mshHandle.FindTextureFiles());
-
-
-
-            List<string> noDups = fileDeps.Distinct().ToList();
-            System.IO.File.WriteAllLines(depsTXTPath, noDups.ToArray());
-            Console.WriteLine("\nPaths to be copied: ");
-            foreach (string copied in noDups)
+            if (args.Length == 2)
             {
-                Console.WriteLine(copied);
+                if (args[1].Contains("c"))
+                {
+                    CopyWithDeps(args[0]);
+                }
+                else
+                {
+                    PasteWithDeps(args[0]);
+                }
             }
 
             //copy
