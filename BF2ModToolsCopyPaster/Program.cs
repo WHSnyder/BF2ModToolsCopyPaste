@@ -29,11 +29,19 @@ namespace BF2ModToolsCopyPaster
             ODFHandler handle = ODFHandler.GetODFHandler(filePath);
 
             string geomName = handle.GetPropertyValue("GeometryName");
+
+            if (geomName == null)
+            {
+                return;
+            }
+
+
             string mshFileName = geomName.Contains(".msh") ? geomName : geomName + ".msh";
 
             DirectoryInfo di = new DirectoryInfo(Path.GetDirectoryName(Path.GetFullPath(filePath)));
 
-            string exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            string exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            string exeDir = exePath.StartsWith("file:\\") ? exePath.Substring(6) : exePath;
             Console.WriteLine("Exe dir: {0}", exeDir);
 
             string worldFolderPath = di.Parent.FullName;
@@ -67,7 +75,12 @@ namespace BF2ModToolsCopyPaster
                 }
             }
 
-            System.IO.File.WriteAllLines("deps.txt", fileDeps.ToArray());
+            string depsTXTPath = exeDir + "\\deps.txt";
+
+            Console.WriteLine("Will write deps to {0}", depsTXTPath);
+
+            System.IO.File.WriteAllLines(depsTXTPath, fileDeps.ToArray());
+            //System.IO.File.WriteAllLines("deps.txt", fileDeps.ToArray());
 
 
             //MSH mesh = MSH.LoadFromFile();

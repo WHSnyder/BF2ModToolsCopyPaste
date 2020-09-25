@@ -55,7 +55,13 @@ namespace BF2ModToolsCopyPaster
 
         public string GetPropertyValue(string propertyName)
         {
-            return properties[propertyName];
+            try
+            {
+                return properties[propertyName];
+            } catch (Exception e)
+            {
+                return null;
+            }
         }
     }
 }
