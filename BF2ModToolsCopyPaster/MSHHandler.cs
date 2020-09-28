@@ -13,7 +13,7 @@ namespace BF2ModToolsCopyPaster
     class MSHHandler
     {
         private MSH mesh;
-        private string filePath, folderPath;
+        public string filePath, folderPath;
 
         public static MSHHandler SearchFromFolder(string directory, string mshName)
         {
@@ -56,9 +56,9 @@ namespace BF2ModToolsCopyPaster
             folderPath = Path.GetDirectoryName(filePath);
         }
 
-        public List<string> FindTextureFiles()
+        public HashSet<string> FindTextureFiles()
         {
-            List<string> fileDeps = new List<string>();
+            HashSet<string> fileDeps = new HashSet<string>();
 
             foreach (MATD mat in mesh.Materials)
             {

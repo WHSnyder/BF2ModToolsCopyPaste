@@ -18,9 +18,8 @@ namespace BF2ModToolsCopyPaster
 
         static void CopyWithDeps(string path_)
         {
+            HashSet<string> fileDeps = new HashSet<string>();
 
-
-            List<string> fileDeps = new List<string>();
 
             string filePath = path_;
             if (!filePath.EndsWith(".odf") && !filePath.EndsWith(".msh"))
@@ -33,6 +32,7 @@ namespace BF2ModToolsCopyPaster
             MSHHandler mshHandle = null;
             if (handle != null)
             {
+                fileDeps.Add(filePath);
                 mshHandle = MSHHandler.SearchFromFolder(filePath, handle.GetPropertyValue("GeometryName"));
 
                 if (mshHandle == null)
@@ -41,13 +41,14 @@ namespace BF2ModToolsCopyPaster
                 }
             }
 
-            fileDeps.AddRange(mshHandle.FindTextureFiles());
+            fileDeps.UnionWith(mshHandle.FindTextureFiles());
+            fileDeps.Add(mshHandle.filePath);
 
-            List<string> noDups = fileDeps.Distinct().ToList();
-            System.IO.File.WriteAllLines(depsTXTPath, noDups.ToArray());
+            
+            System.IO.File.WriteAllLines(depsTXTPath, fileDeps.ToArray());
 
             Console.WriteLine("\nPaths to be copied: ");
-            foreach (string copied in noDups)
+            foreach (string copied in fileDeps)
             {
                 Console.WriteLine(copied);
             }
@@ -56,13 +57,39 @@ namespace BF2ModToolsCopyPaster
 
         static void PasteWithDeps(string path)
         {
-            string mshDestDir;
-            string odfDestDir;
+            string mshDestDir, odfDestDir, clickedDir = path;
 
+            if (!File.GetAttributes(clickedDir).HasFlag(FileAttributes.Directory))
+            {
+                clickedDir = Path.GetDirectoryName(path);
+            }
+
+            odfDestDir = clickedDir;
+            if (Directory.Exists(Path.Combine(clickedDir,"odf")))
+            {
+                odfDestDir = Path.Combine(clickedDir,"odf");
+            }
+
+            mshDestDir = clickedDir;
+            if (Directory.Exists(Path.Combine(clickedDir,"msh")))
+            {
+                mshDestDir = Path.Combine(clickedDir,"msh");
+            }
+
+            Console.WriteLine("Clicked dir: {0}, MSH destination dir: {1}", clickedDir, mshDestDir);
 
             foreach (string line in File.ReadAllLines(depsTXTPath))
             {
-                
+                string fileName = Path.GetFileName(line);
+
+                if (fileName.EndsWith(".odf"))
+                {
+                    File.Copy(line, Path.Combine(odfDestDir, fileName));
+                }
+                else
+                {
+                    File.Copy(line, Path.Combine(mshDestDir, fileName));
+                }
             }
         }
 
