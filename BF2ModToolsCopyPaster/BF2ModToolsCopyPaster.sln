@@ -1,9 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWBF2CopyPaste", "SWBF2CopyPaste.csproj", "{D10C3868-80FA-46C0-AFD5-D1AEAAF488B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BF2ModToolsCopyPaster", "BF2ModToolsCopyPaster.csproj", "{D10C3868-80FA-46C0-AFD5-D1AEAAF488B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSWBF2", "..\libSWBF2_CSharp\LibSWBF2\LibSWBF2.csproj", "{EB1B6CDB-7671-4300-8B04-F2C6865FD79B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSWBF2", "..\..\libSWBF2_CSharp\LibSWBF2\LibSWBF2.csproj", "{EB1B6CDB-7671-4300-8B04-F2C6865FD79B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
