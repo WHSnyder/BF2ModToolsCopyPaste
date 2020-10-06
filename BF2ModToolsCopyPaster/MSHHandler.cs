@@ -26,20 +26,20 @@ namespace BF2ModToolsCopyPaster
 
             DirectoryInfo di = new DirectoryInfo(Path.GetDirectoryName(Path.GetFullPath(directory)));
 
-            string possibleMSHPath = di.FullName + "\\" + mshFileName;
+            string possibleMSHPath = Path.Combine(di.FullName, mshFileName);
             if (File.Exists(possibleMSHPath))
             {
                 return possibleMSHPath;
             }
 
             string worldFolderPath = di.Parent.FullName;
-            possibleMSHPath = worldFolderPath + "\\msh\\" + mshFileName;
+            possibleMSHPath = Path.Combine(worldFolderPath, "msh", mshFileName);
             if (File.Exists(possibleMSHPath))
             {
                 return possibleMSHPath;
             }
 
-            possibleMSHPath = worldFolderPath + "\\msh\\PC\\" + mshFileName;
+            possibleMSHPath = Path.Combine(worldFolderPath, "msh", "PC", mshFileName);
             if (File.Exists(possibleMSHPath))
             {
                 return possibleMSHPath;
@@ -66,11 +66,11 @@ namespace BF2ModToolsCopyPaster
                 {
                     if (texName == null || !texName.EndsWith(".tga")) continue;
 
-                    string texturePath = folderPath + "\\" + texName;
+                    string texturePath = Path.Combine(folderPath, texName);
 
                     if (!File.Exists(texturePath))
                     {
-                        texturePath = folderPath + "\\PC\\" + texName;
+                        texturePath = Path.Combine(folderPath, "PC", texName);
                         if (!File.Exists(texturePath))
                         {
                             texturePath = Path.Combine(Directory.GetParent(folderPath).FullName,texName);

@@ -45,7 +45,7 @@ namespace BF2ModToolsCopyPaster
 
                     Console.WriteLine("Found FX texture dep: " + texName);
 
-                    string texturePath = folderPath + "\\" + texName + ".tga";
+                    string texturePath = Path.Combine(folderPath,texName + ".tga");
 
                     if (File.Exists(texturePath))
                     {
