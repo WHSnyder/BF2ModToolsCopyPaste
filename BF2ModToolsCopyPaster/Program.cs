@@ -188,15 +188,9 @@ namespace BF2ModToolsCopyPaster
                 return;
             }
 
-            foreach (string arg in args)
-            {
-                Console.WriteLine("Arg: " + arg);
-            }
-
             string exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-
-            Console.WriteLine("exe path: " + exePath);
             string exeDir = exePath.StartsWith("file:") ? exePath.Substring(5) : exePath;
+
             odfDepsTXTPath = Path.Combine(exeDir, "odfDeps.txt");
             mshDepsTXTPath = Path.Combine(exeDir, "mshDeps.txt");
             fxDepsTXTPath = Path.Combine(exeDir, "fxDeps.txt");
@@ -209,8 +203,6 @@ namespace BF2ModToolsCopyPaster
                 if (args[args.Length - 1].Contains("c"))
                 {
                     List<HashSet<string>> dependencies = GetAllDependencies(pathsInput);
-
-                    Console.WriteLine("FINISHED SEARCH");
 
                     System.IO.File.WriteAllLines(odfDepsTXTPath, dependencies[0].ToArray());
                     System.IO.File.WriteAllLines(mshDepsTXTPath, dependencies[1].ToArray());
